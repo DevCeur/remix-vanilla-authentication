@@ -1,10 +1,14 @@
 import { cva } from "class-variance-authority";
+import { useRef, useEffect, useState } from "react";
+import { BiLoaderAlt } from "react-icons/bi/index.js";
 
 import type { ButtonHTMLAttributes } from "react";
 import type { VariantProps } from "class-variance-authority";
 
 const buttonStyles = cva(
-  ["text-sm font-medium px-5 py-3 border border-transparent rounded-lg"],
+  [
+    "text-sm font-medium px-5 py-3 flex justify-center items-center border border-transparent rounded-lg",
+  ],
   {
     variants: {
       variant: {
@@ -29,13 +33,38 @@ const buttonStyles = cva(
 
 type ButtonProps = {
   children: React.ReactNode;
+  isLoading?: boolean;
 } & ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonStyles>;
 
-export function Button({ children, variant, width, ...buttonProps }: ButtonProps) {
+export function Button({
+  children,
+  isLoading,
+  variant,
+  width,
+  ...buttonProps
+}: ButtonProps) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const [calculatedInitialWidth, setCalculatedInitialWidth] = useState<number>();
+
+  useEffect(() => {
+    setCalculatedInitialWidth(buttonRef.current?.offsetWidth);
+  }, []);
+
   return (
-    <button className={buttonStyles({ variant, width })} {...buttonProps}>
-      {children}
+    <button
+      ref={buttonRef}
+      className={`${buttonStyles({ variant, width })} w-[${calculatedInitialWidth}px]`}
+      {...buttonProps}
+    >
+      {isLoading ? (
+        <span className="block animate-spin">
+          <BiLoaderAlt />
+        </span>
+      ) : (
+        <>{children}</>
+      )}
     </button>
   );
 }

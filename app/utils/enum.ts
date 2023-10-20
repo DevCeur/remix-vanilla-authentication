@@ -7,3 +7,5 @@ export const ROUTE = {
   DASHBOARD: "/dashboard",
   PROFILE: "/profile",
 };
+
+export const FIELD_REQUIRED_ERROR_MESSAGE = "This field is required";

@@ -21,7 +21,7 @@ export async function withAuthLoader({ callback, loaderArgs }: WithAuthLoaderOpt
   const authCookie = request.headers.get("cookie");
   const session = await getSession(authCookie);
 
-  const isAuth = session.has("userId");
+  const isAuth = session.has("user");
 
   if (isAuth && PUBLIC_ROUTES.includes(pathname)) {
     throw redirect(ROUTE.DASHBOARD);

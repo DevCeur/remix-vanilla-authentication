@@ -10,3 +10,15 @@ export const { getSession, commitSession, destroySession } = createCookieSession
     maxAge: 31 * 24 * 60 * 60,
   },
 });
+
+type GetUserSessionOptions = {
+  request: Request;
+};
+
+export async function getUserSession({ request }: GetUserSessionOptions) {
+  const cookie = request.headers.get("cookie");
+
+  const session = await getSession(cookie);
+
+  return { session };
+}
