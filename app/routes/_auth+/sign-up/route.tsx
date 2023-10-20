@@ -1,5 +1,6 @@
-import { SignFormWrapper } from "~/components/sign-form-wrapper";
+import { Button } from "~/components/button";
 import { TextInput } from "~/components/text-input";
+import { SignFormWrapper } from "~/components/sign-form-wrapper";
 
 export default function SignUpRoute() {
   return (
@@ -26,6 +27,8 @@ export default function SignUpRoute() {
             placeholder="+6 characters"
           />
         </div>
+
+        <Button width="full">Create Account</Button>
       </form>
     </SignFormWrapper>
   );
