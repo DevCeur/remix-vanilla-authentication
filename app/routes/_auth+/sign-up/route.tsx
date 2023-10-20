@@ -1,6 +1,15 @@
+import type { LoaderFunction } from "@remix-run/node";
+
+import { withAuthLoader } from "~/utils/with-auth-loader";
+
 import { Button } from "~/components/button";
 import { TextInput } from "~/components/text-input";
 import { SignFormWrapper } from "~/components/sign-form-wrapper";
+
+export const loader: LoaderFunction = (loaderArgs) =>
+  withAuthLoader({
+    loaderArgs,
+  });
 
 export default function SignUpRoute() {
   return (
