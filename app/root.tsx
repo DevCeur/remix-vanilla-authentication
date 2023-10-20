@@ -22,7 +22,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="w-full max-w-4xl mx-auto">
         <Outlet />
         <ScrollRestoration />
         <Scripts />
