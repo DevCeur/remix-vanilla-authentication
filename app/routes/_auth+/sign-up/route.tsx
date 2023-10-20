@@ -1,17 +1,14 @@
 import { z } from "zod";
-import { Form, useActionData, useNavigation } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 
 import type { ZodError } from "zod";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 
+import { FIELD_REQUIRED_ERROR_MESSAGE, ROUTE } from "~/utils/enum";
 import { commitSession, getUserSession } from "~/utils/session";
 import { withAuthLoader } from "~/utils/with-auth-loader";
-import { FIELD_REQUIRED_ERROR_MESSAGE, ROUTE } from "~/utils/enum";
 
-import { Button } from "~/components/button";
-import { TextInput } from "~/components/text-input";
-import { SignFormWrapper } from "~/components/sign-form-wrapper";
+import { SignUpView } from "./view";
 
 export const loader: LoaderFunction = (loaderArgs) =>
   withAuthLoader({
@@ -52,7 +49,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     // setting user session
     // TO-DO | Fix this and set it with a generated id"
-    session.set("user", { email: formData.email });
+    session.set("user", { username: formData.username, email: formData.email });
 
     return redirect(ROUTE.DASHBOARD, {
       headers: {
@@ -69,43 +66,5 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function SignUpRoute() {
-  const navigation = useNavigation();
-  const actionData = useActionData<typeof action>();
-
-  const errors = actionData?.errors;
-  const isLoading = navigation.state === "submitting";
-
-  return (
-    <SignFormWrapper title="Create Account" caption="Fill the form and create an account">
-      <Form method="post" action="/sign-up">
-        <div className="mb-5 grid grid-cols-2 gap-5">
-          <TextInput label="Name" name="name" errors={errors} />
-
-          <TextInput label="Username" name="username" errors={errors} />
-        </div>
-
-        <div className="mb-8 space-y-5">
-          <TextInput
-            label="Email"
-            name="email"
-            type="email"
-            placeholder="e.g.: test@email.com"
-            errors={errors}
-          />
-
-          <TextInput
-            label="Password"
-            name="password"
-            type="password"
-            placeholder="+6 characters"
-            errors={errors}
-          />
-        </div>
-
-        <Button width="full" isLoading={isLoading}>
-          Create Account
-        </Button>
-      </Form>
-    </SignFormWrapper>
-  );
+  return <SignUpView />;
 }
