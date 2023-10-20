@@ -1,9 +1,32 @@
 import { SignFormWrapper } from "~/components/sign-form-wrapper";
+import { TextInput } from "~/components/text-input";
 
 export default function SignUpRoute() {
   return (
     <SignFormWrapper title="Create Account" caption="Fill the form and create an account">
-      <h1>Sign Up</h1>
+      <form>
+        <div className="mb-5 grid grid-cols-2 gap-5">
+          <TextInput label="Name" name="name" />
+
+          <TextInput label="Username" name="username" />
+        </div>
+
+        <div className="mb-8 space-y-5">
+          <TextInput
+            label="Email"
+            name="email"
+            type="email"
+            placeholder="e.g.: test@email.com"
+          />
+
+          <TextInput
+            label="Password"
+            name="password"
+            type="password"
+            placeholder="+6 characters"
+          />
+        </div>
+      </form>
     </SignFormWrapper>
   );
 }
