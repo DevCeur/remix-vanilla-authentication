@@ -14,7 +14,7 @@ const buttonStyles = cva(
       variant: {
         primary: ["text-white", "bg-slate-900", "hover:bg-slate-800"],
 
-        danger: ["text-red-500", "hover:bg-red-50", "border-red-500"],
+        danger: ["text-red-500", "hover:bg-red-50", "!border-red-500"],
       },
 
       width: {
@@ -55,7 +55,11 @@ export function Button({
   return (
     <button
       ref={buttonRef}
-      className={`${buttonStyles({ variant, width })} w-[${calculatedInitialWidth}px]`}
+      disabled={isLoading}
+      className={`${buttonStyles({
+        variant,
+        width,
+      })} w-[${calculatedInitialWidth}px] disabled:opacity-80`}
       {...buttonProps}
     >
       {isLoading ? (

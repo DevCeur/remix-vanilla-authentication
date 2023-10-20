@@ -49,7 +49,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     // setting user session
     // TO-DO | Fix this and set it with a generated id"
-    session.set("user", { username: formData.username, email: formData.email });
+    session.set("user", { name: formData.name, username: formData.username });
 
     return redirect(ROUTE.DASHBOARD, {
       headers: {
