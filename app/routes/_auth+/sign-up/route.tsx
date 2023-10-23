@@ -5,7 +5,7 @@ import type { ZodError } from "zod";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 
 import { FIELD_REQUIRED_ERROR_MESSAGE, ROUTE } from "~/utils/enum";
-import { commitSession, getUserSession } from "~/utils/session";
+import { commitSession, setUserSession } from "~/utils/session";
 import { withAuthLoader } from "~/utils/with-auth-loader";
 
 import { SignUpView } from "./view";
@@ -38,8 +38,6 @@ const FormSchema = z
   .required({ name: true, username: true, email: true, password: true });
 
 export const action: ActionFunction = async ({ request }) => {
-  const { session } = await getUserSession({ request });
-
   const formData = Object.fromEntries(await request.formData());
 
   try {
@@ -49,7 +47,8 @@ export const action: ActionFunction = async ({ request }) => {
 
     // setting user session
     // TO-DO | Fix this and set it with a generated id"
-    session.set("user", { name: formData.name, username: formData.username });
+
+    const { session } = await setUserSession({ request, user: formData });
 
     return redirect(ROUTE.DASHBOARD, {
       headers: {

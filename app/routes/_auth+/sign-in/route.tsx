@@ -1,32 +1,59 @@
-import { Link } from "@remix-run/react";
+import { z } from "zod";
 
-import type { LoaderFunction } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+
+import type { ZodError } from "zod";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+
+import { FIELD_REQUIRED_ERROR_MESSAGE, ROUTE } from "~/utils/enum";
 
 import { withAuthLoader } from "~/utils/with-auth-loader";
+import { commitSession, setUserSession } from "~/utils/session";
 
-import { Button } from "~/components/button";
-import { TextInput } from "~/components/text-input";
-import { SignFormWrapper } from "~/components/sign-form-wrapper";
+import { SignInView } from "./view";
 
 export const loader: LoaderFunction = (loaderArgs) => withAuthLoader({ loaderArgs });
 
+const FormSchema = z
+  .object({
+    emailOrUsername: z.string().min(1, { message: FIELD_REQUIRED_ERROR_MESSAGE }),
+    password: z
+      .string()
+      .min(1, { message: FIELD_REQUIRED_ERROR_MESSAGE })
+      .min(6, { message: "This password is too short" }),
+  })
+  .required({ emailOrUsername: true, password: true });
+
+export const action: ActionFunction = async ({ request }) => {
+  const formData = Object.fromEntries(await request.formData());
+
+  try {
+    FormSchema.parse(formData);
+
+    // here will go the user creation process
+
+    // setting user session
+    // TO-DO | Fix this and set it with a generated id"
+    const { session } = await setUserSession({ request, user: formData });
+
+    session.set("user", {
+      email: formData.email,
+    });
+
+    return redirect(ROUTE.DASHBOARD, {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
+  } catch (err) {
+    const error = err as Error & ZodError;
+
+    const formattedErrors = error.format();
+
+    return json({ errors: formattedErrors });
+  }
+};
+
 export default function SignInRoute() {
-  return (
-    <SignFormWrapper title="Sign In" caption="Welcome back! Fill the form and sign in">
-      <form>
-        <div className="mb-8 space-y-5">
-          <TextInput label="Email or Username" name="emailOrUsername" />
-
-          <div className="flex flex-col space-y-2">
-            <TextInput label="Password" name="password" type="password" />
-            <Link to="/recover-password" className="text-right text-xs text-gray-400">
-              Forgot my password
-            </Link>
-          </div>
-        </div>
-
-        <Button width="full">Sign In</Button>
-      </form>
-    </SignFormWrapper>
-  );
+  return <SignInView />;
 }

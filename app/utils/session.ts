@@ -26,3 +26,15 @@ export async function getUserSession({
 
   return { session };
 }
+
+type SetUserSessionOptions = {
+  user: { [x: string]: string } | any;
+} & GetUserSessionOptions;
+
+export async function setUserSession({ request, user }: SetUserSessionOptions) {
+  const { session } = await getUserSession({ request });
+
+  session.set("user", { id: user.id, email: user.email });
+
+  return { session };
+}
